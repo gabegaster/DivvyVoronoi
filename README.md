@@ -3,6 +3,12 @@ DivvyVoronoi
 
 A visualization of bike trips in Chicago. See what Divvy data can say about Chicago's geography.
 
+Uses D3.js and Leaflet to visualize a heatmap over voronoi tiles around the City of Chicago's Divvy Stations.
+
+Feedback, fixes and suggestions are most welcome! Thanks for checking it out.
+
+Getting Started
+===============
 Uses [data-workflow](https://github.com/deanmalmgren/data-workflow.git) to automate the entire data workflow, from munging to running the server locally. 
 
 Requires numpy and data-workflow.
