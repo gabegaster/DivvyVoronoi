@@ -13,4 +13,4 @@ Uses [data-workflow](https://github.com/deanmalmgren/data-workflow.git) to autom
 
 Requires numpy and data-workflow.
 
-If you have data-workflow and numpy, all you need to do is git clone, type `workflow` in the command-line, wait ~90 seconds for the data crunching, and goto `localhost:8000` to see the locally hosted version of the visualization. 
+If you have data-workflow and numpy, all you need to do is git clone, type `workflow` in the command-line, wait ~90 seconds for the data crunching, and goto `localhost:8000` in your web-browser to see the locally hosted version of the visualization. 
