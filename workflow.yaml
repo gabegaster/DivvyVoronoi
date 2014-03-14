@@ -1,0 +1,25 @@
+---
+# download data from Divvy
+creates: data/Divvy_Stations_Trips_2013.zip
+command: 
+  - mkdir -p $(dirname {{creates}})
+  - curl http://divvybikes.com/assets/images/Divvy_Stations_Trips_2013.zip > {{creates}}
+---
+creates: data/Divvy_Stations_Trips_2013/
+depends: data/Divvy_Stations_Trips_2013.zip
+command: 
+   - unzip {{depends}} -d $(dirname {{depends}})
+---
+creates: web/data/
+command: 
+   - mkdir -p {{creates}}
+---
+creates: web/data/Station_Data.csv
+depends: data/Divvy_Stations_Trips_2013/
+command: python munge/aggregate_trips.py
+---
+creates: web/server_is_up
+depends: web/data/Station_Data.csv
+command:
+   - touch server_is_up
+   - cd $(dirname {{creates}}) && python -m SimpleHTTPServer

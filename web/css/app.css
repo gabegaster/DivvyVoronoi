@@ -1,0 +1,57 @@
+#map {
+  height: 667px;
+}
+
+#station_detail {
+  font-size:36px;
+  width:960px;
+}
+
+#top_description {
+  font-size:10px;
+}
+
+path {
+  fill: #000;
+  fill-opacity: .7;
+  /* stroke: #fff; */
+  /* stroke-width: 1.5px; */
+}
+
+path:hover {
+  fill: brown;
+  fill-opacity: .8;
+}
+
+.table th, .table td { 
+  border-top: none !important; 
+}
+.table>tbody>tr>td {
+  border-top: none;
+}
+
+.table {
+}
+.table tr td.NTrips {
+  width:55px;
+  text-align:right;
+  font-size:larger;
+  font-weight:bold;
+  padding-right:0px;
+  /* display:block; */
+}
+.table tr td.RowStationName {
+  float:left;
+  padding-left:0px;
+  text-align:center; 
+  vertical-align:middle;
+  padding-top:10px;
+}
+#legend{
+  font-size:19px;
+  padding-right:0px;
+  height:100px;
+}
+#legend_label{
+  font-size:12px;
+}

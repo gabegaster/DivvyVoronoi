@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Biking from place to place</title>
+
+  <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+  <link rel="stylesheet" 
+	href="css/app.css">
+  <link rel="stylesheet" 
+	href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
+  <link rel="stylesheet" 
+	href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+  <link rel="stylesheet" 
+	href="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.css">
+
+  <meta property="og:title" content="Biking from place to place">
+  <meta property="og:image" content="http://divvy.datasco.pe/data/milwaukee.jpg">
+  <meta property="og:site_name" content="Datascope Analytics">
+  <meta property="og:description" content="Rapid prototyping with data... and beyond.">
+  <meta property="twitter:card" content="summary">
+  <meta property="twitter:site" content="@DsAtweet">
+  <meta property="twitter:creator" content="@gabegaster">
+  <meta property="twitter:title" content="Biking from place to place">
+  <meta property="twitter:description" content="Where do divvy bikers go?">
+  <meta property="twitter:image:src" content="http://divvy.datasco.pe/data/milwaukee.jpg">
+  <meta property="twitter:domain" content="datasco.pe">
+  
+</head>
+<body>
+
+  <div class="row">
+    <div id="station_detail" class="col-md-5 col-md-offset-1"></div>
+    <div id="top_description" class="col-md-6 col-md-offset-1">
+      Bubble radius is .6 miles as the crow flies.
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6" id="map_wrapper">
+      <div id="map" class="col-md-offset-1"></div>
+      <div id="attribution" class="col-md-offset-1">
+	A <a href="http://datasco.pe">DsA</a> production, by <a href="http://twitter.com/gabegaster">Gabe</a> and <a href="http://twitter.com/bigbadwolf">Aaron</a>.</div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="row" id="table_row">
+	<div class="col-md-6">
+	  <table class="table" id="terminate">
+	    <thead>
+              <tr> <th colspan="2">From <span class="station-name"></span>...</th></tr>
+	    </thead>
+	    <tbody>
+	    </tbody>
+	  </table>
+	</div>
+	<div class="col-md-6">
+	  <table class="table" id="originate">
+	    <thead>
+              <tr> <th colspan="2">To <span class="station-name"></span>...</th></tr>
+	    </thead>
+	    <tbody>
+	    </tbody>
+	  </table>
+	</div>
+      </div>
+      <div class="row" style="height:50px;"></div>
+      <div class="row">
+	<div id="legend-label" class="col-md-10 col-md-offset-2">
+	  Number of trips from <span class="station-name">...</span>
+	  </div>
+	<div id="legend" class="col-md-10 col-md-offset-2"></div>
+      </div>
+      <div class="row" style="height:50px;"></div>
+      <div class="row">
+	<div class="col-md-6 col-md-offset-2" id="verbose_description">
+	  A heatmap of aggregate bike trips throughout the city from a
+	  selected station. Each region roughly corresponds to the area
+	  within 3/5ths of a mile from the Divvy station (i.e. places
+	  you'd walk from/to).
+	</div>
+      </div>
+    </div>
+  </div>
+
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/d3/3.3.11/d3.min.js"></script>
+  <script src="http://d3js.org/colorbrewer.v1.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.5.2/underscore-min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.js"></script>
+  <script type="text/javascript" 
+	  src="http://maps.stamen.com/js/tile.stamen.js?v1.2.4"></script>
+  <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+
+  <script src="js/maps.js"></script>
+</body>
+
+</html>

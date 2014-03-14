@@ -1,3 +1,11 @@
+.hg/
+.workflow/
+data/
+src/
+*~
+
+
+
 *.py[cod]
 
 # C extensions
