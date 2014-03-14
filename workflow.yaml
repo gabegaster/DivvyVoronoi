@@ -10,13 +10,13 @@ depends: data/Divvy_Stations_Trips_2013.zip
 command: 
    - unzip {{depends}} -d $(dirname {{depends}})
 ---
-creates: web/data/
-command: 
-   - mkdir -p {{creates}}
----
 creates: web/data/Station_Data.csv
-depends: data/Divvy_Stations_Trips_2013/
-command: python munge/aggregate_trips.py
+depends: 
+   - data/Divvy_Stations_Trips_2013/
+   - munge/aggregate_trips.py
+command: 
+   - mkdir -p $(dirname {{creates}})
+   - python {{depends}}
 ---
 creates: web/server_is_up
 depends: web/data/Station_Data.csv
