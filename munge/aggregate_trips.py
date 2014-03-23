@@ -16,7 +16,7 @@ def read_stations():
         f.next()
         r = csv.reader(f)
         for index,line in enumerate(r):
-            stations[line[1]] = index-1
+            stations[line[1]] = index
     return stations
 
 def read_trips():
@@ -37,9 +37,7 @@ def get_counts(name2row):
         A[x,y] += 1
     return A
 
-def main():
-    name2row = read_stations()
-    counts = get_counts(name2row)
+def main(counts):
     old_file_name = "%s/Divvy_Stations_2013.csv" % data_dir
     new_file_name = "%s/Station_Data.csv" % web_dir
 
@@ -54,5 +52,15 @@ def main():
             line.append(list(station_data))
             writer.writerow(line)
 
+def tests():
+    name2row = read_stations()
+    counts = get_counts(name2row)
+    assert sum(counts[name2row["Normal Ave & Archer Ave"]]) == 425
+
+    counts[name2row["Lake Shore Dr & Monroe"],
+           name2row["Streeter Dr & Illinois St"]] == 1297
+
+    return counts
+
 if __name__=="__main__":
-    main()
+    main(tests())
