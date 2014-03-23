@@ -14,13 +14,8 @@
 path {
   fill: #000;
   fill-opacity: .7;
-  /* stroke: #fff; */
-  /* stroke-width: 1.5px; */
-}
-
-path:hover {
-  fill: brown;
-  fill-opacity: .8;
+  stroke: #fff;
+  stroke-width: .5px;
 }
 
 .table th, .table td { 
