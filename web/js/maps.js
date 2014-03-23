@@ -20,8 +20,10 @@ var g     = svg.append("g").attr("class", "leaflet-zoom-hide");
 var clips = svg.append("g").attr("id","point-clips");
 var svg_legend = d3.select("#legend").append("svg")
 
-var blues = colorbrewer.Blues[6].slice()
+// colorbrewer.Blues[6].slice()
+var blues = ["#eff3ff", "#c6dbef", "#9ecae1", "#6baed6", "#3182bd", "#08519c"]
 blues[0] = "transparent"
+
 var side_length = 60;
 var padding = 1;
 // make the legend
@@ -39,6 +41,7 @@ svg_legend.selectAll("text")
     .data([0,0,0])
     .enter()
     .append("text")
+svg_legend.attr("visibility","hidden");
 
 // These are transformation functions for d3, that allow my lat long
 // data to interface with leaflet
@@ -58,8 +61,9 @@ var transform = d3.geo.transform({point: projectPoint});
 var path = d3.geo.path().projection(transform);
 
 var station_detail = d3.select("#station_detail");
+var start_text = "Mouse over a station: where do they go?";
 station_detail.append("text")
-    .text("Mouse over a station: where do they go?");
+    .text(start_text);
 
 function polygon2geoJsonFeature(polygon){
     // geo_json polygons need to start and stop at the same point
@@ -156,27 +160,50 @@ d3.csv("data/Station_Data.csv", function(data){
 	    return new L.LatLng(d[0],d[1]);})))
 
     geo_json = data2geo_json(data);
+
+    var totalCounts = geo_json.features
+	.map(function(x){return x.properties.outCounts;})
+	.reduce(function(a,b){return addArrays(a,b);})
+    // initial coloring
+    initial_feature = {"type":"Feature",
+			   "properties":{
+			       "name": "All Stations",
+			       "outCounts": totalCounts,
+			   }}
+
     number_of_choices = 1; // global variable to keep track of how
 			   // many times i've recolored tiles. This
 			   // will ensure that the last tile has the
 			   // biggest top value, so it'll be on top.
     
     var mouseover_enabled = true;
-
     var feature = g.selectAll("path")
     	.data(geo_json.features)
     	.enter().append("path")
         .attr("clip-path", 
 	      function(d,i) { return "url(#clip-"+i+")"; })
-	// .style("fill", function(d){
-	//     return colorScale(d.in_out);})
-       .on("click", on_click)         
+    // .style("fill", function(d){
+    //     return colorScale(d.in_out);})
+	.on("click", on_click)         
 	.on("mouseover", on_mouseover); 
     // mouse_over works inititally, until there's been a click. When
     // there's been a click -- mouse_over is disabled.
 
     map.on("viewreset", reset);
     reset();
+    // color_tiles(initial_feature);
+    // station_detail.text("Mouse over a station: where do they go?");
+
+    $('#show_voronoi').click(function () {
+	station_detail.selectAll("text")
+	    .remove();
+	station_detail.append("text")
+	    .text(start_text);
+	color_tiles(initial_feature);
+	show_bubbles();
+	$(this).button('reset');
+    });
+
 
     function on_mouseover(d,i){
 	var that = this;
@@ -210,14 +237,20 @@ d3.csv("data/Station_Data.csv", function(data){
 	var text_extent = [small,middle,big]
 	    .map(Math.round)
 	    .map(numberWithCommas)
-	svg_legend.selectAll("text")
-	    .data(text_extent)
-	    .text(function(d){return d;})
-	    .attr("y", side_length + 20) // /2+5)
-	    .attr("x", function(d,i){
-		return (padding + side_length)*i*2+side_length/2;})
-	    .attr("text-anchor", "middle");
 
+	if (geo_feature.properties.index==undefined){
+	    svg_legend.attr("visibility","hidden");
+	}
+	else {
+	    svg_legend.attr("visibility","visible");
+	    svg_legend.selectAll("text")
+		.data(text_extent)
+		.text(function(d){return d;})
+		.attr("y", side_length + 20) // /2+5)
+		.attr("x", function(d,i){
+		    return (padding + side_length)*i*2+side_length/2;})
+		.attr("text-anchor", "middle");
+	}
 	// divvy: 5DBCD2
 	// darker 196E82
 	g.selectAll("path")
@@ -236,42 +269,49 @@ d3.csv("data/Station_Data.csv", function(data){
 	    .style("stroke","black")
 	    .style("stroke-width","2.1");
 
-	g.selectAll("path")
-	    .style("fill", function(d){
-		return colorScale(geo_feature
-				  .properties
-				  .outCounts[d.properties.index]);
-	    }); // Assumes the ordering in outCounts matches the
-		// INITIAL ordering of the paths. This ordering can
-		// change, but index doesn't.
-
-	//d3.select("legend")
 	var top3_indices = argSort(geo_feature.properties.outCounts);
 	top3_originate = [];
-	_.each( top3_indices.sortIndices.slice(0,3), function(d,i) {
+	_.each( top3_indices.slice(0,3), function(d,i) {
 	    top3_originate.push({
 		rank:i+1,
 		name:data[d].name,
-		count:top3_indices[i]
+		count:geo_feature.properties.outCounts[d],
 	    });
 	});
-	
-	top3_terminate = data.map(function(d,i){
-	    return {name:d.name,
-		    count:$.parseJSON(d.outCounts)[geo_feature.properties.index]
-		   };})
-	    .sort(function(a,b){ return b.count - a.count})
-	    .slice(0,3)
-	_.each(top3_terminate, function(d,i){
-	    d.rank = i+1;
-	});
+
+	if (geo_feature.properties.index==undefined){
+	    terminal_totals = geo_json.features
+		.map(function(x){return x.properties.outCounts})
+		.map(array_sum);
+	    top3_terminate = argSort(terminal_totals)
+		.slice(0,3)
+		.map(function(i){return {name:data[i].name,
+					 count:terminal_totals[i]};});
+	    terminal_total = array_sum(terminal_totals);
+	}
+	else {
+	    fill_tiles(geo_feature);
+	    
+	    top3_terminate = data.map(function(d,i){
+		return {name:d.name,
+			count:$.parseJSON(d.outCounts)[geo_feature.properties.index]
+		       };})
+		.sort(function(a,b){ return b.count - a.count})
+		.slice(0,3)
+	    _.each(top3_terminate, function(d,i){
+		d.rank = i+1;
+	    });
+	    terminal_total = geo_json.features
+		.map(function(x){
+		    return x.properties.outCounts[geo_feature.properties.index]})
+		.reduce(function(a,b){return a+b});
+	}
 
 	original_total = geo_feature.properties.outCounts
 	    .reduce(function(pv, cv) { return pv + cv; }, 0);
-	terminal_total = geo_json.features
-	    .map(function(x){
-		return x.properties.outCounts[geo_feature.properties.index]})
-	    .reduce(function(a,b){return a+b});
+
+	// originator : the total TO all stations from him.  
+	// terminator : the total FROM all stations to him.
 
 	top3_originate.push({rank:"TOTAL",
 			     name:"all stations",
@@ -281,8 +321,8 @@ d3.csv("data/Station_Data.csv", function(data){
 			     count:terminal_total});
 
 	$("span.station-name").html(geo_feature.properties.name)
-	update_table("terminate",top3_terminate,"to");
-	update_table("originate",top3_originate,"from");
+	update_table("terminate",top3_terminate,"from");
+	update_table("originate",top3_originate,"to");
     };
 
     function update_table(direction, data,text){
@@ -380,7 +420,7 @@ function argSort(toSort) {
 	out.sortIndices.push(out[j][1]);
 	out[j] = out[j][0];
     }
-    return out;
+    return out.sortIndices;
 }
 
 function numberWithCommas(x) {
@@ -414,4 +454,30 @@ function resize(){
         $('#map_wrapper').css("padding-left", 0);
     }
 
+}
+function addArrays(ar1, ar2){
+    var ar3 = [];
+    for(var i in ar1)
+        ar3.push(ar1[i] + ar2[i]);
+    return ar3;
+}
+function array_sum(ary){
+    return ary.reduce(function(a,b){return a+b;})
+}
+function fill_tiles(geo_feature){
+    g.selectAll("path")
+	.style("fill", function(d){
+	    return colorScale(geo_feature
+			      .properties
+			      .outCounts[d.properties.index]);
+	}); // Assumes the ordering in outCounts matches the
+    // INITIAL ordering of the paths. This ordering can
+    // change, but index doesn't.
+}
+
+function show_bubbles(){
+    g.selectAll("path")
+	.style("stroke-width",".5")
+	.style("stroke","white")
+	.style("fill","#000");
 }
