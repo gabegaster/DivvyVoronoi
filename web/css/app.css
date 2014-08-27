@@ -1,18 +1,21 @@
 #map {
-  height: 667px;
+  height: 650px;
 }
 
 #station_detail {
-  font-size:36px;
+  margin-left: 32px;
+  font-size:32px;
+  height:35px;
   width:960px;
 }
 
 #top_description {
   font-size:10px;
+  margin-left: 32px;
 }
 
 path {
-  fill: #000;
+  fill: #08519c; /* #000; */
   fill-opacity: .7;
   stroke: #fff;
   stroke-width: .5px;
@@ -49,4 +52,8 @@ path {
 }
 #legend_label{
   font-size:12px;
+}
+
+.leaflet-left .leaflet-control {
+  margin-left: 0px;
 }

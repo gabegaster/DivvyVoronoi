@@ -1,5 +1,6 @@
-// replace "toner" here with "terrain" or "watercolor"
-var layer = new L.StamenTileLayer("toner");
+// replace "toner" here with "terrain" or "watercolor", or
+// "toner-lite"
+var layer = new L.StamenTileLayer("toner-lite");
 var lat = 41.88362062793376, 
     lon = -87.64411926269531; // the coordinates of Chicago
 
@@ -9,6 +10,7 @@ var map = new L.Map("map", {
     minZoom: 11,
     maxZoom: 15,
     doubleClickZoom: false,
+    scrollWheelZoom: false,
 });
 map.addLayer(layer);
 
@@ -61,7 +63,7 @@ var transform = d3.geo.transform({point: projectPoint});
 var path = d3.geo.path().projection(transform);
 
 var station_detail = d3.select("#station_detail");
-var start_text = "Mouse over a station: where do they go?";
+var start_text = "Mouse over a station: where do they bike from here?";
 station_detail.append("text")
     .text(start_text);
 
@@ -200,6 +202,11 @@ d3.csv("data/Station_Data.csv", function(data){
 	station_detail.append("text")
 	    .text(start_text);
 	color_tiles(initial_feature);
+	station_detail.selectAll("text")
+	    .remove();
+
+	station_detail.append("text")
+	    .text(start_text);
 	show_bubbles();
 	$(this).button('reset');
     });
@@ -228,6 +235,11 @@ d3.csv("data/Station_Data.csv", function(data){
 	    .text(geo_feature.properties.name);
 
 	var extent = d3.extent(geo_feature.properties.outCounts);
+	// colorScale = d3.scale.linear()
+	//     .domain(d3.extent(geo_feature.properties.outCounts))
+	//     // .interpolate(d3.interpolateRgb)
+	//     .range([0,.9]);
+
 	colorScale = d3.scale.quantize()
 	    .domain(extent)
 	    .range(blues);
@@ -439,22 +451,6 @@ function numberWithCommas(x) {
 //     });
 // }
 	  
-/// MARGIN STUFF -- because leaflet seems to ignore/override
-/// bootstrap. adapted from
-/// http://gis.stackexchange.com/questions/62491/sizing-leaflet-map-inside-bootstrap/62663#62663
-
-var mapmargin = 70;
-$(window).on("resize", resize);
-resize();
-function resize(){
-
-    if($(window).width()>=980){
-        $('#map_wrapper').css("padding-left", mapmargin);
-    }else{
-        $('#map_wrapper').css("padding-left", 0);
-    }
-
-}
 function addArrays(ar1, ar2){
     var ar3 = [];
     for(var i in ar1)
@@ -479,5 +475,5 @@ function show_bubbles(){
     g.selectAll("path")
 	.style("stroke-width",".5")
 	.style("stroke","white")
-	.style("fill","#000");
+	.style("fill"," #08519c");
 }

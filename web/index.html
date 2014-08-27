@@ -29,25 +29,25 @@
   
 </head>
 <body>
-
+  
   <div class="row">
-    <div id="station_detail" class="col-md-5 col-md-offset-1"></div>
-    <div id="top_description" class="col-md-6 col-md-offset-1">
-      Bubble radius is .6 miles as the crow flies.
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-6" id="map_wrapper">
-      <div id="map" class="col-md-offset-1"></div>
-      <div id="attribution" class="col-md-offset-1">
-	A <a href="http://datasco.pe">DsA</a> production, by <a href="http://twitter.com/gabegaster">Gabe</a> and <a href="http://twitter.com/bigbadwolf">Aaron</a>. Data from <a href="http://divvybikes.com/data/">Divvy</a>. Built with <a href="http://d3js.org/">D3js</a>. <a href="https://github.com/gabegaster/DivvyVoronoi">Fork it</a>.</div>
+    <div class="row">
+      <div id="station_detail" ></div>
+      <div id="top_description">
+	Bubble radius is .6 miles as the crow flies.
+      </div>
     </div>
 
-    <div class="col-md-6">
-      <div class="row" id="table_row">
-	<div class="col-md-6">
-	  <table class="table" id="originate">
+    <div class="col-md-8" id="map_wrapper">
+      <div id="map" ></div>
+    <div id="attribution">
+	A <a href="http://datasco.pe">DsA</a> production, by <a href="http://twitter.com/gabegaster">Gabe</a> and <a href="http://twitter.com/bigbadwolf">Aaron</a>. Data from <a href="http://divvybikes.com/datachallenge">Divvy</a>. Built with <a href="http://d3js.org/">D3js</a>. <a href="https://github.com/gabegaster/DivvyVoronoi">Fork it</a>.</div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="row col-md-11" id="table_row">
+	<div class="row col-md-11">
+	  <table class="table " id="originate">
 	    <thead>
               <tr> <th colspan="2">From <span class="station-name"></span>...</th></tr>
 	    </thead>
@@ -55,36 +55,38 @@
 	    </tbody>
 	  </table>
 	</div>
-	<div class="col-md-6">
-	  <table class="table" id="terminate">
-	    <thead>
-              <tr> <th colspan="2">To <span class="station-name"></span>...</th></tr>
-	    </thead>
-	    <tbody>
-	    </tbody>
-	  </table>
-	</div>
-      </div>
+      <!-- 	<div class="col-md-6"> -->
+      <!-- 	  <table class="table" id="terminate"> -->
+      <!-- 	    <thead> -->
+      <!--         <tr> <th colspan="2">To <span class="station-name"></span>...</th></tr> -->
+      <!-- 	    </thead> -->
+      <!-- 	    <tbody> -->
+      <!-- 	    </tbody> -->
+      <!-- 	  </table> -->
+      <!-- 	</div> -->
+      <!-- </div> -->
       <div class="row" style="height:50px;"></div>
       <div class="row">
-	<div id="legend-label" class="col-md-10 col-md-offset-2">
+	<div id="legend-label" class="col-md-12 ">
 	  Number of trips from <span class="station-name">...</span>
 	  </div>
-	<div id="legend" class="col-md-10 col-md-offset-2"></div>
+	<div id="legend" class="col-md-10 "></div>
       </div>
       <div class="row" style="height:50px;"></div>
       <div class="row">
-	<div class="col-md-6 col-md-offset-2" id="verbose_description">
+	<div class="col-md-12" id="verbose_description">
 	  A heatmap of aggregate bike trips throughout the city from a
-	  selected station. Each region roughly corresponds to the area
-	  within 3/5ths of a mile from the Divvy station (i.e. places
-	  you'd walk from/to).
+	  selected station, answering the question: "where do people
+	  bike from here?" All trips from 2013 (750K of them) supplied
+	  by Divvy. Each region roughly corresponds to the area within
+	  half a mile from the Divvy station (i.e. places you'd walk
+	  from/to).
 	</div>
       </div>
       <div class="row" style="height:30px;"></div>
       <div class="row">
 	<div class="col-md-6 col-md-offset-3">
-	  <button type="button" id="show_voronoi" class="btn btn-default">Show Voronoi Bubbles</button>
+	  <button type="button" id="show_voronoi" class="btn btn-default">restart</button>
 	</div>
       </div>
     </div>
@@ -98,6 +100,17 @@
   <script src="js/bootstrap.min.js"></script>
   <script src="js/maps.js"></script>
 
+<script>
+  // google analytics
+
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-48991311-1', 'datasco.pe');
+  ga('send', 'pageview');
+</script>
 </body>
 
 </html>
