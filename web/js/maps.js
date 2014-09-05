@@ -358,19 +358,19 @@ d3.csv("data/Station_Data.csv", function(data){
     }
 
     function nice_name(d){
-	return d.name
+	return d.name // need regex \b (space or EOL) to prevent Union Station -> Unionation, e.g.
 	    .replace(/ & /g,"/")
-	    .replace(/ St/g,"")
-	    .replace(/ Dr/g,"")
-	    .replace(/ Ave/g,"")
+	    .replace(/ St\b/g,"")
+	    .replace(/ Dr\b/g,"")
+	    .replace(/ Ave\b/g,"")
 	    .replace(/ Pkwy/g,"")
 	    .replace(/ Rd/g,"")
 	    .replace(/ Blvd/g,"")
-	    .replace(/ Way/g,"")
+	    .replace(/ Way\b/g,"")
 	    .replace(/ Ln/g,"")
 	    .replace(/ Ct/g,"")
 	    .replace(/ Plaza/g,"")
-	    .replace(/ Pl/g,"")
+	    .replace(/ Pl\b/g,"")
 	    .replace(/Merchandise Mart/g,"MerchMart")
     }
 
