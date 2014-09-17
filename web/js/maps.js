@@ -38,7 +38,8 @@ svg_legend.selectAll("rect")
     .attr("height", side_length)
     .attr("x", function(d,i){
 	return (padding + side_length)*i;})
-    .attr("y",0);
+    .attr("y",0)
+    .attr("class","legend-rect");
 svg_legend.selectAll("text")
     .data([0,0,0])
     .enter()

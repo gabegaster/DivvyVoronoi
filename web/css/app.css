@@ -54,6 +54,10 @@ path {
   font-size:12px;
 }
 
+.legend-rect{
+  fill-opacity:.7;
+}
+
 .leaflet-left .leaflet-control {
   margin-left: 0px;
 }
