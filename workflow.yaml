@@ -3,7 +3,7 @@
 creates: data/Divvy_Stations_Trips_2013.zip
 command: 
   - mkdir -p $(dirname {{creates}})
-  - curl http://divvybikes.com/assets/images/Divvy_Stations_Trips_2013.zip > {{creates}}
+  - curl http://www.divvybikes.com/assets/images/Divvy_Stations_Trips_2013.zip > {{creates}}
 ---
 creates: data/Divvy_Stations_Trips_2013/
 depends: data/Divvy_Stations_Trips_2013.zip

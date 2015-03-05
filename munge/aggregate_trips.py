@@ -57,7 +57,7 @@ def tests():
     counts = get_counts(name2row)
     assert sum(counts[name2row["Normal Ave & Archer Ave"]]) == 425
 
-    counts[name2row["Lake Shore Dr & Monroe"],
+    counts[name2row["Lake Shore Dr & Monroe St"],
            name2row["Streeter Dr & Illinois St"]] == 1297
 
     return counts
