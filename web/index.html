@@ -12,6 +12,8 @@
 	href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css">
   <link rel="stylesheet" 
 	href="//netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap-theme.min.css">
+  <link rel="stylesheet"
+	href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.2/css/bootstrap3/bootstrap-switch.min.css">
   <link rel="stylesheet" 
 	href="//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.2/leaflet.css">
 
@@ -42,7 +44,12 @@
     <div class="col-md-8" id="map_wrapper">
       <div id="map" ></div>
     <div id="attribution">
-	A <a href="http://datasco.pe">DsA</a> production, by <a href="http://twitter.com/gabegaster">Gabe</a> and <a href="http://twitter.com/bigbadwolf">Aaron</a>. Data from <a href="http://divvybikes.com/datachallenge">Divvy</a>. Built with <a href="http://d3js.org/">D3js</a>. <a href="https://github.com/gabegaster/DivvyVoronoi">Fork it</a>.</div>
+	A <a href="http://datasco.pe">DsA</a> production,
+	by <a href="http://twitter.com/gabegaster">Gabe</a>
+	and <a href="http://twitter.com/bigbadwolf">Aaron</a>. Data
+	from <a href="http://divvybikes.com/datachallenge">Divvy</a>. Built
+	with <a href="http://d3js.org/">D3js</a>. <a href="https://github.com/gabegaster/DivvyVoronoi">Fork
+	it</a>.</div>
     </div>
 
     <div class="col-md-4">
@@ -73,12 +80,13 @@
 	  </div>
 	<div id="legend" class="col-md-10 "></div>
       </div>
+
       <div class="row" style="height:50px;"></div>
       <div class="row">
 	<div class="col-md-12" id="verbose_description">
 	  A heatmap of aggregate bike trips throughout the city from a
 	  selected station, answering the question: "where do people
-	  bike from here?" All trips from 2013 (750K of them) supplied
+	  bike from here?" All trips from 2013 and 2014 (3.2M of them) supplied
 	  by Divvy. Each region roughly corresponds to the area within
 	  half a mile from the Divvy station (i.e. places you'd walk
 	  from/to).
@@ -87,18 +95,33 @@
       <div class="row" style="height:30px;"></div>
       <div class="row">
 	<div class="col-md-6 col-md-offset-3">
-	  <button type="button" id="show_voronoi" class="btn btn-default">restart</button>
+	  <button type="button" id="show_voronoi" 
+		  class="btn btn-default">restart</button>
 	</div>
       </div>
+      <div class="row" style="height:40px;"></div>
+      <div class="row col-md-10">
+	<input type="checkbox" 
+	       data-on-text="Relative"
+	       data-off-text="Absolute *"
+	       data-label-width="60"
+	       data-handle-width="65"
+	       id="relative"
+	       checked></div>
+      <div id="absolute-explanation" class="row col-md-10" 
+	   style="height:50px;"></div>
+
     </div>
   </div>
 
   <script src="js/jquery.min.js"></script>
   <script src="js/d3.min.js"></script>
-  <script src="js/underscore-min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.map"></script> -->
   <script src="js/leaflet.js"></script>
   <script src="js/tile.stamen.js"></script>
   <script src="js/bootstrap.min.js"></script>
+  <script src="http://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.2/js/bootstrap-switch.min.js"></script>
   <script src="js/maps.js"></script>
 
 <script>

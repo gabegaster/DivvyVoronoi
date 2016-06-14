@@ -26,7 +26,7 @@ var svg_legend = d3.select("#legend").append("svg")
 var blues = ["#eff3ff", "#c6dbef", "#9ecae1", "#6baed6", "#3182bd", "#08519c"]
 blues[0] = "transparent"
 
-var side_length = 60;
+var side_length = 55;
 var padding = 1;
 // make the legend
 svg_legend.selectAll("rect")
@@ -116,6 +116,8 @@ function how_far_to_walk(){
 }
 
 d3.csv("data/Station_Data.csv", function(data){
+    //var current_feature, current_index, current_that;
+    
     // so that each data point remembers it place in the ordering
     _.each(data,function(e,i){ 
 	e.longitude = +e.longitude;
@@ -164,9 +166,15 @@ d3.csv("data/Station_Data.csv", function(data){
 
     geo_json = data2geo_json(data);
 
-    var totalCounts = geo_json.features
-	.map(function(x){return x.properties.outCounts;})
-	.reduce(function(a,b){return addArrays(a,b);})
+    var subtotals = geo_json.features
+	.map(function(x){return x.properties.outCounts;});
+    var totalCounts = subtotals
+	.reduce(function(a,b){return addArrays(a,b);});
+    global_extent = [
+	d3.min(subtotals, function(d){return d3.min(d)}),
+	d3.max(subtotals, function(d){return d3.max(d)})
+    ]
+
     // initial coloring
     initial_feature = {"type":"Feature",
 			   "properties":{
@@ -202,12 +210,13 @@ d3.csv("data/Station_Data.csv", function(data){
 	    .remove();
 	station_detail.append("text")
 	    .text(start_text);
+
 	color_tiles(initial_feature);
 	station_detail.selectAll("text")
 	    .remove();
 
 	station_detail.append("text")
-	    .text(start_text);
+	    .text("From All Stations");
 	show_bubbles();
 	$(this).button('reset');
     });
@@ -227,6 +236,10 @@ d3.csv("data/Station_Data.csv", function(data){
     }
 
     function color_tiles(geo_feature,index,that){
+	current_feature = geo_feature;
+	current_index = index;
+	current_that = that;
+
 	// update scale and recolors tiles according to dynamic scale
 	geo_feature.properties.top = number_of_choices++;
 	
@@ -235,26 +248,38 @@ d3.csv("data/Station_Data.csv", function(data){
 	    .append("text")
 	    .text(geo_feature.properties.name);
 
-	var extent = d3.extent(geo_feature.properties.outCounts);
+	if ( $("#relative").bootstrapSwitch("state") ){
+	    var extent = d3.extent(geo_feature.properties.outCounts);
+	    colorScale = d3.scale.quantize()
+		.domain(extent)
+		.range(blues);
+	    var small = extent[1]/6; //  *3/2;
+	    var middle= small * 3;
+	    var big   = extent[1];
+	} else {
+	    var big   = global_extent[1];
+	    var p = Math.pow(big,1/6.);
+	    var thresholds = _.range(7)
+		.map(function(d){return Math.pow(p,d)+70;}).slice(1)
+	    var small = thresholds[1];
+	    var middle= thresholds[3];
+	    colorScale = d3.scale.threshold()
+		.domain(thresholds)
+		.range(blues);
+	}
 	// colorScale = d3.scale.linear()
 	//     .domain(d3.extent(geo_feature.properties.outCounts))
 	//     // .interpolate(d3.interpolateRgb)
 	//     .range([0,.9]);
 
-	colorScale = d3.scale.quantize()
-	    .domain(extent)
-	    .range(blues);
-	var small = extent[1]/6; //  *3/2;
-	var middle= small * 3;
-	var big   = extent[1];
 	var text_extent = [small,middle,big]
 	    .map(Math.round)
 	    .map(numberWithCommas)
 
-	if (geo_feature.properties.index==undefined){
-	    svg_legend.attr("visibility","hidden");
-	}
-	else {
+	// if (geo_feature.properties.index==undefined){
+	//     svg_legend.attr("visibility","hidden");
+	// }
+	// else {
 	    svg_legend.attr("visibility","visible");
 	    svg_legend.selectAll("text")
 		.data(text_extent)
@@ -263,7 +288,7 @@ d3.csv("data/Station_Data.csv", function(data){
 		.attr("x", function(d,i){
 		    return (padding + side_length)*i*2+side_length/2;})
 		.attr("text-anchor", "middle");
-	}
+	// }
 	// divvy: 5DBCD2
 	// darker 196E82
 	g.selectAll("path")
@@ -271,7 +296,9 @@ d3.csv("data/Station_Data.csv", function(data){
 		return a.properties.top-b.properties.top; })
 	    .style("stroke","white")
 	    .style("stroke-width",function(d){
-		if (geo_feature.properties.outCounts[d.properties.index]>small){
+		if (geo_feature
+		    .properties
+		    .outCounts[d.properties.index]>small){
 		    return .3;
 		} else {
 		    return 0;
@@ -415,6 +442,24 @@ d3.csv("data/Station_Data.csv", function(data){
 	    .attr("fill","#196E82")
 	    .attr("stroke","black");
     };
+
+    $("#relative")
+	.bootstrapSwitch()
+	.on('switchChange.bootstrapSwitch', function(event, state) {
+	    if (!(current_index===undefined)){		
+		console.log("FUCK");
+		color_tiles(current_feature, current_index, current_that);
+	    }
+	    
+	    if (!state & !(current_index==undefined) ){
+		$("#absolute-explanation")
+		    .html("* Exponential scale with cut-off.")
+	    } else {
+		$("#absolute-explanation")
+		    .html("")
+	    }
+	});
+
 })
 
 function argSort(toSort) {
@@ -473,8 +518,41 @@ function fill_tiles(geo_feature){
 }
 
 function show_bubbles(){
+    // geo_json.features.
+    function sum_col(i){
+	var thing = geo_json.features.map(function(feature) { 
+	    return feature.properties.outCounts[i]})
+	return array_sum(thing);
+    }
+    in_counts = _.range(300).map(sum_col);
+
+    var big = d3.max(in_counts);
+    var p = Math.pow(big,1/6.);
+    var thresholds = _.range(7)
+	.map(function(d){return Math.pow(p,d)+70;}).slice(1)
+
+    var small = thresholds[1];
+    var middle= thresholds[3];
+    var colorScale = d3.scale.threshold()
+	.domain(thresholds)
+	.range(blues);
+
+    var text_extent = [small,middle,big]
+	.map(Math.round)
+	.map(numberWithCommas)
+    svg_legend.attr("visibility","visible");
+    svg_legend.selectAll("text")
+	.data(text_extent)
+	.text(function(d){return d;})
+	.attr("y", side_length + 20) // /2+5)
+	.attr("x", function(d,i){
+	    return (padding + side_length)*i*2+side_length/2;})
+	.attr("text-anchor", "middle");
+    
     g.selectAll("path")
 	.style("stroke-width",".5")
 	.style("stroke","white")
-	.style("fill"," #08519c");
+	.style("fill", function(d){
+	    return colorScale(in_counts[d.properties.index])});
+    // " #08519c");
 }
