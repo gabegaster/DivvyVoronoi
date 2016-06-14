@@ -19,9 +19,7 @@ def read_stations():
         with open("%s/stations/%s"%(data_dir, filename), 'r') as f:
             r = csv.DictReader(f)
             for index,line in enumerate(r):
-                if "id" not in line:
-                    import ipdb
-                    ipdb.set_trace()
+                assert "id" in line, line
                 stations[line['id']] = line
     id2index = {}
     for index, _id in enumerate(stations):
@@ -46,12 +44,7 @@ def get_counts(id2row):
 
     for start,stop,_ in read_trips():
         x,y = id2row.get(start), id2row.get(stop)
-        if None in (x,y):
-            print "FUCK"
-            import ipdb
-            ipdb.set_trace()
-        else:
-            A[x,y] += 1
+        A[x,y] += 1
     return A
 
 def write(id2station, counts):
@@ -73,11 +66,13 @@ def write(id2station, counts):
 def tests():
     id2station, id2row = read_stations()
     counts = get_counts(id2row)
-    # assert sum(counts[name2row["Normal Ave & Archer Ave"]]) == 425
 
-    # assert counts[name2row["Lake Shore Dr & Monroe"],
-    #        name2row["Streeter Dr & Illinois St"]] == 1297
-
+    # name2row = dict((v["name"], k) for k,v in id2station.iteritems())
+    # archer = sum(counts[int(name2row["Normal Ave & Archer Ave"])])
+    # assert archer == 425, archer
+    # big_station = counts[id2row["Lake Shore Dr & Monroe St"],
+    #                      id2row["Streeter Dr & Illinois St"]]
+    # assert big_station == 1297, big_station
     return id2station, counts
 
 def main():
